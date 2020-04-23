@@ -36,7 +36,7 @@ def init_db():
 @click.command('init-db')
 @with_appcontext
 def init_db_command():
-    #清理现存的数据，建立新的表，初始化数据库。
+    #清理现存的数据，建立新的表
     init_db()
     click.echo('Initialized the database.')
 
