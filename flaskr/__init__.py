@@ -25,10 +25,6 @@ def create_app(test_config=None):
         os.makedirs(app.instance_path)
     except OSError:
         pass
-        
-    @app.route('/')
-    def index():
-        return 'Hello, World!'
     
     from . import db
     #初始化数据库。
@@ -37,6 +33,12 @@ def create_app(test_config=None):
     from . import auth
     #使用 app.register_blueprint() 导入并注册 蓝图。
     app.register_blueprint(auth.bp)
+    
+    from . import blog
+    app.register_blueprint(blog.bp)
+    #app.add_url_rule() 关联端点名称 'index' 和 / URL ，
+    #这样 url_for('index') 或 url_for('blog.index') 都会有效，会生成同样的 / URL 。
+    app.add_url_rule('/', endpoint='index')
     
     return app
         
