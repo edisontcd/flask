@@ -1,6 +1,10 @@
 #-*- coding:utf-8 -*-
 
 import pytest
+<<<<<<< HEAD
+=======
+
+>>>>>>> 1253ac4ef7c6c7aba31330037ea283b59a3415ef
 from flaskr.db import get_db
 
 
