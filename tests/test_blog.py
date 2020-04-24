@@ -1,7 +1,6 @@
 #-*- coding:utf-8 -*-
 
 import pytest
-
 from flaskr.db import get_db
 
 
