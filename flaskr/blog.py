@@ -47,30 +47,12 @@ def get_post(id, check_author=True):
     )
 
     if post is None:
-        abort(404, "Post id {id} doesn't exist.")
+        abort(404, "Post id doesn't exist.")
 
     if check_author and post["author_id"] != g.user["id"]:
         abort(403)
 
     return post
-    
-@bp.route("/<int:id>")
-def post(id):
-    post = (
-        get_db()
-        .execute(
-            "SELECT p.id, title, body, created, author_id, username"
-            " FROM post p JOIN user u ON p.author_id = u.id"
-            " WHERE p.id = ?",
-            (id,),
-        )
-        .fetchone()
-    )
-    
-    if post is None:
-        abort(404, "Post id {id} doesn't exist.")
-    
-    return render_template("blog/post.html", post=post)
 
 @bp.route("/create", methods=("GET", "POST"))
 @login_required
@@ -137,3 +119,25 @@ def delete(id):
     db.execute("DELETE FROM post WHERE id = ?", (id,))
     db.commit()
     return redirect(url_for("blog.index"))
+
+#def like_post():
+    
+
+@bp.route("/<int:id>")
+def post(id):
+    post = (
+        get_db()
+        .execute(
+            "SELECT p.id, title, body, created, author_id, username"
+            " FROM post p JOIN user u ON p.author_id = u.id"
+            " WHERE p.id = ?",
+            (id,),
+        )
+        .fetchone()
+    )
+    
+    if post is None:
+        abort(404, "Post doesn't exist.")
+    
+    return render_template("blog/post.html", post=post)
+    
