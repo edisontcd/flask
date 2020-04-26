@@ -5,13 +5,15 @@
 {% endblock %}
 
 {% block content %}
-    <article class="post">
-      <header>
-        <div>
-          <div class="about">by {{ post['username'] }} on {{ post['created'].strftime('%Y-%m-%d') }}</div>
-        </div>
-      </header>
-      <p class="body">{{ post['body'] }}</p>
+	<article class="post">
+    	<header>
+          	<div class="about">by {{ post['username'] }} on {{ post['created'].strftime('%Y-%m-%d') }}</div>
+      	</header>
+      	<p class="body">{{ post['body'] }}</p>
+		<hr>
     </article>
-    <hr>
+	<ul class="like">
+		<li><a href="">Like</a> 123</li>
+		<li><a href="">Dislike</a> 0</li>
+	</ul>
 {% endblock %}
