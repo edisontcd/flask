@@ -25,7 +25,6 @@ def index():
     ).fetchall()
     return render_template("blog/index.html", posts=posts)
 
-
 def get_post(id, check_author=True):
     """Get a post and its author by id.
     Checks that the id exists and optionally that the current user is
@@ -54,7 +53,24 @@ def get_post(id, check_author=True):
         abort(403)
 
     return post
-
+    
+@bp.route("/<int:id>")
+def post(id):
+    post = (
+        get_db()
+        .execute(
+            "SELECT p.id, title, body, created, author_id, username"
+            " FROM post p JOIN user u ON p.author_id = u.id"
+            " WHERE p.id = ?",
+            (id,),
+        )
+        .fetchone()
+    )
+    
+    if post is None:
+        abort(404, "Post id {id} doesn't exist.")
+    
+    return render_template("blog/post.html", post=post)
 
 @bp.route("/create", methods=("GET", "POST"))
 @login_required
