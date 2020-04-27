@@ -2,19 +2,21 @@
 <title>{% block title %}{% endblock %} - Flaskr</title>
 <head>
 <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-<script type="text/javascript" src="{{ url_for('static', filename='script.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='jquery-3.5.0.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='like-dislike.js') }}"></script>
 </head>
+<body>
 <nav>
-  <h1><a href="{{ url_for('blog.index') }}">Flaskr</a></h1>
-  <ul>
-    {% if g.user %}
-      <li><span>{{ g.user['username'] }}</span></li>
-      <li><a href="{{ url_for('auth.logout') }}">Log Out</a></li>
-    {% else %}
-      <li><a href="{{ url_for('auth.register') }}">Register</a></li>
-      <li><a href="{{ url_for('auth.login') }}">Log In</a></li>
-    {% endif %}
-  </ul>
+	<h1><a href="{{ url_for('blog.index') }}">Flaskr</a></h1>
+	<ul>
+		{% if g.user %}
+			<li><span>{{ g.user['username'] }}</span></li>
+			<li><a href="{{ url_for('auth.logout') }}">Log Out</a></li>
+		{% else %}
+			<li><a href="{{ url_for('auth.register') }}">Register</a></li>
+			<li><a href="{{ url_for('auth.login') }}">Log In</a></li>
+		{% endif %}
+	</ul>
 </nav>
 <section class="content">
   <header>
@@ -25,3 +27,22 @@
   {% endfor %}
   {% block content %}{% endblock %}
 </section>
+<script type="text/javascript">
+$('#rating1').likeDislike({
+	reverseMode: true,
+	disabledClass: 'disable',
+	click: function (value, l, d, event) {
+		var likes = $(this.element).find('.likes');
+		var dislikes =  $(this.element).find('.dislikes');
+
+		likes.text(parseInt(likes.text()) + l);
+		dislikes.text(parseInt(dislikes.text()) + d);
+	}
+});
+$('#rating2').likeDislike({
+	readOnly: true,
+	disabledClass: 'disable'
+});
+</script>
+</body>
+</html>

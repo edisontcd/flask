@@ -17,7 +17,6 @@ nav ul li a, nav ul li span, header .action { display: block; padding: 0.5rem; }
 .post > header h1 { font-size: 1.5em; margin-bottom: 0; }
 .post .about { color: #ccc; font-style: italic; padding: 0.25rem 0 0 0;}
 .post .body { white-space: pre-line; }
-ul.like{ display: flex;}
 .like li { list-style-type: None; margin: 0 1rem 0 0;}
 .content:last-child { margin-bottom: 0; }
 .content form { margin: 1em 0; display: flex; flex-direction: column; }

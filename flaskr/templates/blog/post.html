@@ -2,6 +2,9 @@
 
 {% block header %}
   <h1>{% block title %}{{ post['title'] }}{% endblock %}</h1>
+  {% if g.user['id'] == post['author_id'] %}
+    <a class="action" href="{{ url_for('blog.update', id=post['id']) }}">Edit</a>
+  {% endif %}
 {% endblock %}
 
 {% block content %}
@@ -12,10 +15,21 @@
       	<p class="body">{{ post['body'] }}</p>
 		<hr>
     </article>
-	<ul class="like">
-		<li>
-			<button id='like_it' onclick="displayDate()">Like</button>
-			<p id="like_count"></p>
-		</li>
-	</ul>
+	<div class="like">
+		{% if g.user['id'] == post['author_id'] %}
+			<div id="rating1">
+	    		<button class="btn btn-default like">Like</button>
+				<span class="likes">0</span>
+				<button class="btn btn-default dislike">Dislike</button>
+				<span class="dislikes">0</span>
+			</div>
+		{% else %}
+			<div id="rating2">
+	    		<button class="btn btn-default like">Like</button>
+				<span class="likes">0</span>
+				<button class="btn btn-default dislike">Dislike</button>
+				<span class="dislikes">0</span>
+			</div>
+		{% endif %}
+	</div>
 {% endblock %}
