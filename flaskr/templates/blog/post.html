@@ -13,7 +13,6 @@
           	<div class="about">by {{ post['username'] }} on {{ post['created'].strftime('%Y-%m-%d') }}</div>
       	</header>
       	<p class="body">{{ post['body'] }}</p>
-		<hr>
     </article>
 	<div class="like">
 		{% if g.user['id'] == post['author_id'] %}
@@ -32,4 +31,12 @@
 			</div>
 		{% endif %}
 	</div>
+	<hr>
+	<div class="comments">
+		<form method="post">
+			<label for="title">Comments</label>
+			<textarea name="comment_text" id="comment_text">{{ request.form['comment_text'] }}</textarea>
+			<input type="submit" value="Save">
+		</form>
+	<div>
 {% endblock %}

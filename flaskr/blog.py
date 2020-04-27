@@ -71,6 +71,7 @@ def post(id):
         abort(404, "Post doesn't exist.")
     
     return render_template("blog/post.html", post=post)
+            
 
 @bp.route("/create", methods=("GET", "POST"))
 @login_required
@@ -137,4 +138,21 @@ def delete(id):
     db.execute("DELETE FROM post WHERE id = ?", (id,))
     db.commit()
     return redirect(url_for("blog.index"))
-    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
