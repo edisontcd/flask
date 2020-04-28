@@ -40,9 +40,6 @@ def create_app(test_config=None):
     #这样 url_for('index') 或 url_for('blog.index') 都会有效，会生成同样的 / URL 。
     app.add_url_rule('/', endpoint='index')
     
-    from . import comment
-    app.register_blueprint(comment.bp)
-    
     return app
         
     

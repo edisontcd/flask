@@ -38,5 +38,14 @@
 			<textarea name="comment_text" id="comment_text">{{ request.form['comment_text'] }}</textarea>
 			<input type="submit" value="Save">
 		</form>
+		{% for comment in comments %}
+			<div class="comment_list">
+				<div class="about">Commented by {{ comment['username'] }} on {{ comment['comment_time'].strftime('%Y-%m-%d') }}</div>
+				<p class="comment">{{ comment['comment_text'] }}</p>
+			</div>
+			{% if not loop.last %}
+				<hr>
+			{% endif %}
+		{% endfor %}
 	<div>
 {% endblock %}

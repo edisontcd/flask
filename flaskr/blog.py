@@ -139,20 +139,45 @@ def delete(id):
     db.commit()
     return redirect(url_for("blog.index"))
 
+@bp.route("/<int:id>", methods=("GET", "POST"))
+@login_required
+def comment_form(id):
+    post = (
+        get_db()
+        .execute(
+            "SELECT p.id, title, body, created, author_id, username"
+            " FROM post p JOIN user u ON p.author_id = u.id"
+            " WHERE p.id = ?",
+            (id,),
+        )
+        .fetchone()
+    )
+    
+    if request.method == "POST":
+        comment_text = request.form["comment_text"]
+        error = None
+        
+        if not comment_text:
+            error = "Comment is required."
+        
+        if error is not None:
+            flash(error)
+        else:
+            db = get_db()
+            db.execute(
+                "INSERT INTO comment (post_id, user_id, comment_text) VALUES (?, ?, ?)",
+                (post["id"], g.user["id"], comment_text)
+            )
+            db.commit()
+            return redirect(url_for("blog.post", id=id))
+            
+    return render_template("blog/post.html", post=post)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+def comment():
+    db = get_db()
+    comments = db.execute(
+        "SELECT c.id, post_id, user_id, comment_text, comment_time, username"
+        "From comment c JOIN user u ON c.user_id = u.id"
+        "ORDER BY created DESC"
+    ).fetchall()
+    return render_template("blog/post.html", comments=comments)
