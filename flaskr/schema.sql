@@ -23,6 +23,6 @@ CREATE TABLE comment (
 	user_id INTEGER NOT NULL,
 	comment_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	comment_text TEXT NOT NULL,
-	FOREIGN KEY (post_id) REFERENCES post (id)
+	FOREIGN KEY (post_id) REFERENCES post (id),
 	FOREIGN KEY (user_id) REFERENCES user (id)
 );

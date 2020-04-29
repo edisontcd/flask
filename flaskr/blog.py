@@ -9,7 +9,7 @@ from flask import url_for
 from werkzeug.exceptions import abort
 
 from flaskr.auth import login_required
-from flaskr.db import get_db
+from flaskr.db import get_db, close_db
 
 bp = Blueprint("blog", __name__)
 
@@ -36,8 +36,7 @@ def get_post(id, check_author=True):
     :raise 403: if the current user isn't the author
     """
     post = (
-        get_db()
-        .execute(
+        get_db().execute(
             "SELECT p.id, title, body, created, author_id, username"
             " FROM post p JOIN user u ON p.author_id = u.id"
             " WHERE p.id = ?",
@@ -53,12 +52,32 @@ def get_post(id, check_author=True):
         abort(403)
 
     return post
+    
+def comment_list():
+    db = get_db()
+    comments = db.execute(
+        "SELECT c.id, user_id, comment_time, comment_text, username"
+        " FROM comment c JOIN user u ON c.user_id = u.id"
+        " ORDER BY comment_time DESC"
+    ).fetchall()
+    
+    return comments
+   
+def get_comment(id):
+    db = get_db()
+    comment = db.execute(
+        "SELECT c.id, user_id, comment_time, comment_text, username"
+        " FROM comment c JOIN user u ON c.user_id = u.id"
+        " WHERE c.id = ?",
+        (id,),
+    ).fetchone()
+    
+    return comment
 
 @bp.route("/<int:id>")
 def post(id):
     post = (
-        get_db()
-        .execute(
+        get_db().execute(
             "SELECT p.id, title, body, created, author_id, username"
             " FROM post p JOIN user u ON p.author_id = u.id"
             " WHERE p.id = ?",
@@ -70,8 +89,10 @@ def post(id):
     if post is None:
         abort(404, "Post doesn't exist.")
     
-    return render_template("blog/post.html", post=post)
-            
+    comments = comment_list()
+    
+    return render_template("blog/post.html", comments=comments, post=post)
+     
 
 @bp.route("/create", methods=("GET", "POST"))
 @login_required
@@ -141,10 +162,9 @@ def delete(id):
 
 @bp.route("/<int:id>", methods=("GET", "POST"))
 @login_required
-def comment_form(id):
+def add_comment(id):
     post = (
-        get_db()
-        .execute(
+        get_db().execute(
             "SELECT p.id, title, body, created, author_id, username"
             " FROM post p JOIN user u ON p.author_id = u.id"
             " WHERE p.id = ?",
@@ -173,11 +193,3 @@ def comment_form(id):
             
     return render_template("blog/post.html", post=post)
 
-def comment():
-    db = get_db()
-    comments = db.execute(
-        "SELECT c.id, post_id, user_id, comment_text, comment_time, username"
-        "From comment c JOIN user u ON c.user_id = u.id"
-        "ORDER BY created DESC"
-    ).fetchall()
-    return render_template("blog/post.html", comments=comments)
