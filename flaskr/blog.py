@@ -56,7 +56,7 @@ def get_post(id, check_author=True):
 def comment_list():
     db = get_db()
     comments = db.execute(
-        "SELECT c.id, user_id, comment_time, comment_text, username"
+        "SELECT c.id, user_id, post_id, comment_time, comment_text, username"
         " FROM comment c JOIN user u ON c.user_id = u.id"
         " ORDER BY comment_time DESC"
     ).fetchall()

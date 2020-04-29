@@ -15,7 +15,7 @@
       	<p class="body">{{ post['body'] }}</p>
     </article>
 	<div class="like">
-		{% if g.user['id'] == post['author_id'] %}
+		{% if g.user %}
 			<div id="rating1">
 	    		<button class="btn btn-default like">Like</button>
 				<span class="likes">0</span>
@@ -39,12 +39,14 @@
 			<input type="submit" value="Save">
 		</form>
 		{% for comment in comments %}
-			<div class="comment_list">
-				<div class="about">Commented by {{ comment['username'] }} on {{ comment['comment_time'].strftime('%Y-%m-%d') }}</div>
-				<p class="comment">{{ comment['comment_text'] }}</p>
-			</div>
-			{% if not loop.last %}
-				<hr>
+			{% if comment['post_id'] == post['id'] %}
+				<div class="comment_list">
+					<div class="about">Commented by {{ comment['username'] }} on {{ comment['comment_time'].strftime('%Y-%m-%d') }} <a href="javascript:;" id="reply_btn" >回复</a></div>
+					<p class="comment">{{ comment['comment_text'] }}</p>
+				</div>
+				{% if not loop.last %}
+					<hr>
+				{% endif %}
 			{% endif %}
 		{% endfor %}
 	<div>

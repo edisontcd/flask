@@ -27,6 +27,12 @@
   {% endfor %}
   {% block content %}{% endblock %}
 </section>
+<hr>
+<footer>
+	<div class="copyright">
+		<p>&copy;All Right Reserved</p>
+	</div>
+</footer>
 <script type="text/javascript">
 $('#rating1').likeDislike({
 	reverseMode: true,
@@ -42,6 +48,14 @@ $('#rating1').likeDislike({
 $('#rating2').likeDislike({
 	readOnly: true,
 	disabledClass: 'disable'
+});
+
+$(function(){
+	//页面加载完毕后开始执行的事件
+	$("#reply_btn").click(function(){
+		$("#reply_textarea").remove();
+		$(this).parent().append("<div id='reply_textarea'><textarea cols='40' rows='5'></textarea><br/><input type='submit' value='Save' /></div>");
+	});
 });
 </script>
 </body>
