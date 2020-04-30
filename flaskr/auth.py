@@ -16,7 +16,7 @@ from flaskr.db import get_db
 
 #定义蓝图并注册到应用工厂。
 #url_prefix的参数值会添加到所有与该蓝图关联的URL前面。
-bp = Blueprint('auth', __name__, url_prefix='/auth')
+bp = Blueprint("auth", __name__, url_prefix="/auth")
 
 #在其他视图中验证，用户登录以后才能创建、编辑和删除博客帖子。
 #在每个视图中可以使用 装饰器 来完成这个工作。
@@ -44,16 +44,12 @@ def load_logged_in_user():
     else:
         g.user = (
             get_db().execute("SELECT * FROM user WHERE id = ?", (user_id,)).fetchone()
-        )
-        
+        ) 
     
 #@bp.route装饰器就是负责把一个方法变成属性调用，既能检查参数，又可以用类似属性这样简单的方式访问类的变量。
 @bp.route("/register", methods=("GET", "POST"))
 def register():
-    """Register a new user.
-    Validates that the username is not already taken. Hashes the
-    password for security.
-    """
+    
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
@@ -118,6 +114,46 @@ def logout():
     """Clear the current session, including the stored user id."""
     session.clear()
     return redirect(url_for("index"))
+    
+@bp.route("/<int:id>")
+def author(id):
+    auth_posts = auth_posts_list
+    
+    return render_template("auth/author.html", auth_posts=auth_posts)
+
+def auth_posts_list():
+    db = get_db()
+    auth_posts = db.execute(
+        "SELECT p.id, title, body, created, author_id, username"
+        " FROM post p JOIN user u ON p.author_id = u.id"
+        " WHERE author_id = ?",
+        (id),
+        " ORDER BY created DESC"
+    ).fetchall()
+    
+    return auth_posts
+                 
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
  
 
             
