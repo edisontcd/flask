@@ -16,64 +16,11 @@ bp = Blueprint("blog", __name__)
 
 @bp.route("/")
 def index():
-    """Show all the posts, most recent first."""
-    db = get_db()
-    posts = db.execute(
-        "SELECT p.id, title, body, created, author_id, username"
-        " FROM post p JOIN user u ON p.author_id = u.id"
-        " ORDER BY created DESC"
-    ).fetchall()
-    return render_template("blog/index.html", posts=posts)
-
-def get_post(id, check_author=True):
-    """Get a post and its author by id.
-    Checks that the id exists and optionally that the current user is
-    the author.
-    :param id: id of post to get
-    :param check_author: require the current user to be the author
-    :return: the post with author information
-    :raise 404: if a post with the given id doesn't exist
-    :raise 403: if the current user isn't the author
-    """
-    post = (
-        get_db().execute(
-            "SELECT p.id, title, body, created, author_id, username"
-            " FROM post p JOIN user u ON p.author_id = u.id"
-            " WHERE p.id = ?",
-            (id,),
-        )
-        .fetchone()
-    )
-
-    if post is None:
-        abort(404, "Post id doesn't exist.")
-
-    if check_author and post["author_id"] != g.user["id"]:
-        abort(403)
-
-    return post
+    posts = post_list()
+    comments = comment_list()
     
-def comment_list():
-    db = get_db()
-    comments = db.execute(
-        "SELECT c.id, user_id, post_id, comment_time, comment_text, username"
-        " FROM comment c JOIN user u ON c.user_id = u.id"
-        " ORDER BY comment_time DESC"
-    ).fetchall()
+    return render_template("blog/index.html", posts=posts, comments=comments)
     
-    return comments
-   
-def get_comment(id):
-    db = get_db()
-    comment = db.execute(
-        "SELECT c.id, user_id, comment_time, comment_text, username"
-        " FROM comment c JOIN user u ON c.user_id = u.id"
-        " WHERE c.id = ?",
-        (id,),
-    ).fetchone()
-    
-    return comment
-
 @bp.route("/<int:id>")
 def post(id):
     post = (
@@ -90,8 +37,9 @@ def post(id):
         abort(404, "Post doesn't exist.")
     
     comments = comment_list()
+    posts = post_list()
     
-    return render_template("blog/post.html", comments=comments, post=post)
+    return render_template("blog/post.html", comments=comments, post=post, posts=posts)
      
 
 @bp.route("/create", methods=("GET", "POST"))
@@ -192,4 +140,55 @@ def add_comment(id):
             return redirect(url_for("blog.post", id=id))
             
     return render_template("blog/post.html", post=post)
+    
+def post_list():
+    db = get_db()
+    posts = db.execute(
+        "SELECT p.id, title, body, created, author_id, username"
+        " FROM post p JOIN user u ON p.author_id = u.id"
+        " ORDER BY created DESC"
+    ).fetchall()
+    
+    return posts
+
+def get_post(id, check_author=True):
+    post = (
+        get_db().execute(
+            "SELECT p.id, title, body, created, author_id, username"
+            " FROM post p JOIN user u ON p.author_id = u.id"
+            " WHERE p.id = ?",
+            (id,),
+        )
+        .fetchone()
+    )
+
+    if post is None:
+        abort(404, "Post id doesn't exist.")
+
+    if check_author and post["author_id"] != g.user["id"]:
+        abort(403)
+
+    return post
+    
+def comment_list():
+    db = get_db()
+    comments = db.execute(
+        "SELECT c.id, user_id, post_id, comment_time, comment_text, username"
+        " FROM comment c JOIN user u ON c.user_id = u.id"
+        " ORDER BY comment_time DESC"
+    ).fetchall()
+    
+    return comments
+   
+def get_comment(id):
+    db = get_db()
+    comment = db.execute(
+        "SELECT c.id, user_id, comment_time, comment_text, username"
+        " FROM comment c JOIN user u ON c.user_id = u.id"
+        " WHERE c.id = ?",
+        (id,),
+    ).fetchone()
+    
+    return comment
+
 

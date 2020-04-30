@@ -1,23 +1,48 @@
+/* -----Reset----- */
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video { margin: 0; padding: 0; border: 0; font-size: 100%; 
+	font: inherit; vertical-align: baseline;}
+
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section { display: block;}
+body { line-height: 1;}
+ol, ul { list-style: none;}
+blockquote, q { quotes: none;}
+blockquote:before, blockquote:after,
+q:before, q:after { content: ''; content: none;}
+table { border-collapse: collapse; border-spacing: 0;}
+
+/* -----Base----- */
 html { font-family: sans-serif; background: #eee; padding: 1rem; }
-body { max-width: 960px; margin: 0 auto; background: white; }
-h1 { font-family: serif; color: #377ba8; margin: 1rem 0; }
+body { max-width: 960px; margin: 0 auto; background: #fff; }
+h1 { font-family: serif; color: #377ba8; margin: 0.5rem 0; font-size: 1.5em}
 a { color: #377ba8; }
 hr { border: none; border-top: 1px solid #ccc; }
-nav { background: #ccc; display: flex; align-items: center; padding: 0 0.5rem; }
-nav h1 { flex: auto; margin: 0; }
+
+/* -----Nav----- */
+nav { background: #ccc; display: flex; align-items: center; padding: 0.5rem; }
+nav h1 { flex: auto; margin: 0;}
 nav h1 a { text-decoration: none; padding: 0.25rem 0.5rem; }
 nav ul  { display: flex; list-style: none; margin: 0; padding: 0; }
 nav ul li a, nav ul li span, header .action { display: block; padding: 0.5rem; }
-.content { padding: 0 1rem 1rem; }
+
+/* -----Content----- */
+.content { padding: 0 1rem 1rem;}
 .content > header { border-bottom: 1px solid #ccc; display: flex; align-items: flex-end; }
-.content > header h1 { flex: auto; margin: 1rem 0 0.25rem 0; }
+.content > header h1 { flex: auto; margin: 1rem 0; }
 .flash { margin: 1em 0; padding: 1em; background: #cae6f6; border: 1px solid #377ba8; }
-.post > header { display: flex; align-items: flex-end; font-size: 0.85em; }
-.post > header > div:first-of-type { flex: auto; }
-.post > header h1 { font-size: 1.5em; margin-bottom: 0; }
-.post .about { color: #ccc; font-style: italic; padding: 0.25rem 0 0 0;}
-.post .body { white-space: pre-line; }
-.like li { list-style-type: None; margin: 0 1rem 0 0;}
 .content:last-child { margin-bottom: 0; }
 .content form { margin: 1em 0; display: flex; flex-direction: column; }
 .content label { font-weight: bold; margin-bottom: 0.5em; }
@@ -25,7 +50,31 @@ nav ul li a, nav ul li span, header .action { display: block; padding: 0.5rem; }
 .content textarea { min-height: 12em; resize: vertical; }
 input.danger { color: #cc2f2e; }
 input[type=submit] { align-self: start; min-width: 10em; }
-.copyright{ padding: 0 0 1rem 1rem;}
+
+/* main */
+.main{ width: 70%; float: left; padding: 1rem 0 2rem 0;}
+.post > header { display: flex; align-items: flex-end;}
+.post > header > div:first-of-type { flex: auto; }
+.post > header h1 { font-size: 1.5em; margin-bottom: 0.5rem; }
+.post .about { color: #ccc; font-style: italic; padding: 0.5rem 0;}
+.post .body { white-space: pre-line; line-height: 1.5;}
+.post .more { margin: 1rem 0;}
+.like{ margin: 1rem 0 0.25rem 0;}
+
+/* Sidebar */
+.sidebar { width: 27%; float: right; padding: 1rem 0 2rem 0; line-height: 1.5;}
+.sidebar h2 { margin-bottom: 0.5rem;}
+.sidebar ul { margin-bottom: 1rem;}
+.sidebar li { margin-top: 0.5rem;}
 
 /* Comment */
-.comment_list .about { color: #ccc; font-style: italic; padding: 0.25rem 0 0 0;}
+.comment_list .about { color: #ccc; font-style: italic; padding: 0.5rem 0;}
+.comment_list .comment { white-space: pre-line; line-height: 1.5;}
+.comment_list .reply { margin: 1rem 0;}
+
+/* -----Footer----- */
+footer{ background: #000; display: flex; width: 100%; padding: 1rem 0 0 0;}
+.copyright{ padding: 0 0 1rem 1rem; color: #fff;}
+
+
+

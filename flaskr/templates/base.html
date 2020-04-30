@@ -19,21 +19,42 @@
 	</ul>
 </nav>
 <section class="content">
-  <header>
-    {% block header %}{% endblock %}
-  </header>
-  {% for message in get_flashed_messages() %}
-    <div class="flash">{{ message }}</div>
-  {% endfor %}
-  {% block content %}{% endblock %}
+	<header>
+		{% block header %}{% endblock %}
+	</header>
+	{% for message in get_flashed_messages() %}
+		<div class="flash">{{ message }}</div>
+	{% endfor %}
+	<div class="main">
+		{% block content %}{% endblock %}
+	</div>
+	<div class="sidebar">
+		<h2>Recent Posts</h2>
+		<hr>
+		<ul>
+			{% for post in posts %}
+				<li>
+					<h3><a href="{{ url_for('blog.post', id=post['id']) }}">{{ post['title'] }}</a></h3>
+				</li>
+			{% endfor %}
+		</ul>
+		<h2>Comments</h2>
+		<hr>
+		<ul>
+			{% for comment in comments %}
+				<li>
+					<h3>- {{ comment['comment_text'] }}</h3>
+				</li>
+			{% endfor %}
+		</ul>
+	</div>
 </section>
-<hr>
 <footer>
 	<div class="copyright">
 		<p>&copy;All Right Reserved</p>
 	</div>
 </footer>
-<script type="text/javascript">
+<script>
 $('#rating1').likeDislike({
 	reverseMode: true,
 	disabledClass: 'disable',

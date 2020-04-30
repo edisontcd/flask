@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <h1>{% block title %}{{ post['title'] }}{% endblock %}</h1>
+  <h1>Post</h1>
   {% if g.user['id'] == post['author_id'] %}
     <a class="action" href="{{ url_for('blog.update', id=post['id']) }}">Edit</a>
   {% endif %}
@@ -10,44 +10,48 @@
 {% block content %}
 	<article class="post">
     	<header>
-          	<div class="about">by {{ post['username'] }} on {{ post['created'].strftime('%Y-%m-%d') }}</div>
+			<div>
+				<h1>{% block title %}{{ post['title'] }}{% endblock %}</h1>
+          		<div class="about">by {{ post['username'] }} on {{ post['created'].strftime('%Y-%m-%d') }}</div>
+			</div>
       	</header>
       	<p class="body">{{ post['body'] }}</p>
-    </article>
-	<div class="like">
-		{% if g.user %}
-			<div id="rating1">
-	    		<button class="btn btn-default like">Like</button>
-				<span class="likes">0</span>
-				<button class="btn btn-default dislike">Dislike</button>
-				<span class="dislikes">0</span>
-			</div>
-		{% else %}
-			<div id="rating2">
-	    		<button class="btn btn-default like">Like</button>
-				<span class="likes">0</span>
-				<button class="btn btn-default dislike">Dislike</button>
-				<span class="dislikes">0</span>
-			</div>
-		{% endif %}
-	</div>
-	<hr>
-	<div class="comments">
-		<form method="post">
-			<label for="title">Comments</label>
-			<textarea name="comment_text" id="comment_text">{{ request.form['comment_text'] }}</textarea>
-			<input type="submit" value="Save">
-		</form>
-		{% for comment in comments %}
-			{% if comment['post_id'] == post['id'] %}
-				<div class="comment_list">
-					<div class="about">Commented by {{ comment['username'] }} on {{ comment['comment_time'].strftime('%Y-%m-%d') }} <a href="javascript:;" id="reply_btn" >回复</a></div>
-					<p class="comment">{{ comment['comment_text'] }}</p>
+		<div class="like">
+			{% if g.user %}
+				<div id="rating1">
+		    		<button class="btn btn-default like">Like</button>
+					<span class="likes">0</span>
+					<button class="btn btn-default dislike">Dislike</button>
+					<span class="dislikes">0</span>
 				</div>
-				{% if not loop.last %}
-					<hr>
-				{% endif %}
+			{% else %}
+				<div id="rating2">
+		    		<button class="btn btn-default like">Like</button>
+					<span class="likes">0</span>
+					<button class="btn btn-default dislike">Dislike</button>
+					<span class="dislikes">0</span>
+				</div>
 			{% endif %}
-		{% endfor %}
-	<div>
+		</div>
+		<hr>
+		<div class="comments">
+			<form method="post">
+				<label for="title">Comments</label>
+				<textarea name="comment_text" id="comment_text">{{ request.form['comment_text'] }}</textarea>
+				<input type="submit" value="Save">
+			</form>
+			{% for comment in comments %}
+				{% if comment['post_id'] == post['id'] %}
+					<div class="comment_list">
+						<div class="about">Commented by {{ comment['username'] }} on {{ comment['comment_time'].strftime('%Y-%m-%d') }}</div>
+						<p class="comment">{{ comment['comment_text'] }}</p>
+						<p class="reply"><a href="javascript:;" id="reply_btn" >回复</a></p>
+					</div>
+					{% if not loop.last %}
+						<hr>
+					{% endif %}
+				{% endif %}
+			{% endfor %}
+		<div>
+    </article>
 {% endblock %}
