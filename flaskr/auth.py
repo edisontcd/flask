@@ -1,5 +1,4 @@
 #-*- coding:utf-8 -*-
-import functools
 
 from flask import Blueprint
 from flask import flash
@@ -13,24 +12,12 @@ from werkzeug.security import check_password_hash
 from werkzeug.security import generate_password_hash
 
 from flaskr.db import get_db
+from flaskr.functions import post_list, get_post, comment_list
+from flaskr.functions import login_required, auth_post_list
 
 #定义蓝图并注册到应用工厂。
 #url_prefix的参数值会添加到所有与该蓝图关联的URL前面。
 bp = Blueprint("auth", __name__, url_prefix="/auth")
-
-#在其他视图中验证，用户登录以后才能创建、编辑和删除博客帖子。
-#在每个视图中可以使用 装饰器 来完成这个工作。
-def login_required(view):
-    """View decorator that redirects anonymous users to the login page."""
-
-    @functools.wraps(view)
-    def wrapped_view(**kwargs):
-        if g.user is None:
-            return redirect(url_for("auth.login"))
-
-        return view(**kwargs)
-
-    return wrapped_view
     
 #登录前检查         
 @bp.before_app_request
@@ -108,52 +95,18 @@ def login():
 
     return render_template("auth/login.html")
 
-    
 @bp.route("/logout")
 def logout():
     """Clear the current session, including the stored user id."""
     session.clear()
     return redirect(url_for("index"))
     
-@bp.route("/<int:id>")
-def author(id):
-    auth_posts = auth_posts_list
+@bp.route("/<username>")
+def author(username):
+    auth_posts = auth_post_list(username)
+    posts = post_list()
+    comments = comment_list()
     
-    return render_template("auth/author.html", auth_posts=auth_posts)
+    return render_template("auth/author.html", auth_posts=auth_posts, posts=posts, comments=comments)
 
-def auth_posts_list():
-    db = get_db()
-    auth_posts = db.execute(
-        "SELECT p.id, title, body, created, author_id, username"
-        " FROM post p JOIN user u ON p.author_id = u.id"
-        " WHERE author_id = ?",
-        (id),
-        " ORDER BY created DESC"
-    ).fetchall()
     
-    return auth_posts
-                 
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
- 
-
-            

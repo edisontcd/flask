@@ -52,7 +52,7 @@ input.danger { color: #cc2f2e; }
 input[type=submit] { align-self: start; min-width: 10em; }
 
 /* main */
-.main{ width: 70%; float: left; padding: 1rem 0 2rem 0;}
+.main{ width: 68%; float: left; padding: 1rem 0 2rem 0;}
 .post > header { display: flex; align-items: flex-end;}
 .post > header > div:first-of-type { flex: auto; }
 .post > header h1 { font-size: 1.5em; margin-bottom: 0.5rem; }

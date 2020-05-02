@@ -3,7 +3,7 @@
 {% block header %}
   <h1>Post</h1>
   {% if g.user['id'] == post['author_id'] %}
-    <a class="action" href="{{ url_for('blog.update', id=post['id']) }}">Edit</a>
+    <a class="action" href="{{ url_for('blog.update', title=post['title']) }}">Edit</a>
   {% endif %}
 {% endblock %}
 
@@ -12,7 +12,7 @@
     	<header>
 			<div>
 				<h1>{% block title %}{{ post['title'] }}{% endblock %}</h1>
-          		<div class="about">by {{ post['username'] }} on {{ post['created'].strftime('%Y-%m-%d') }}</div>
+          		<div class="about">by <a href="{{ url_for('auth.author', username=post['username']) }}">{{ post['username'] }}</a> on {{ post['created'].strftime('%Y-%m-%d') }}</div>
 			</div>
       	</header>
       	<p class="body">{{ post['body'] }}</p>
@@ -54,4 +54,25 @@
 			{% endfor %}
 		<div>
     </article>
+{% endblock %}
+
+{% block sidebar %}
+	<h2>Recent Posts</h2>
+	<hr>
+	<ul>
+		{% for post in posts %}
+			<li>
+				<h3><a href="{{ url_for('blog.post', title=post['title']) }}">{{ post['title'] }}</a></h3>
+			</li>
+		{% endfor %}
+	</ul>
+	<h2>Comments</h2>
+	<hr>
+	<ul>
+		{% for comment in comments %}
+			<li>
+				<h3>- >{{ comment['comment_text'] }}</h3>
+			</li>
+		{% endfor %}
+	</ul>
 {% endblock %}

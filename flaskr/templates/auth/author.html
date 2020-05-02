@@ -1,23 +1,44 @@
 {% extends 'base.html' %}
 
 {% block header %}
-	<h1>{% block title %}Log In{% endblock %}</h1>
+	<h1>{% block title %}Author{% endblock %}</h1>
 {% endblock %}
 
 {% block content %}
-	{% for post in auth_posts_list %}
+	{% for auth_post in auth_posts %}
 		<article class="post">
 			<header>
 				<div>
-					<h1><a href="{{ url_for('auth.author', id=author['id']) }}">{{ author['title'] }}</a></h1>
-					<div class="about">by {{ author['username'] }} on {{ author['created'].strftime('%Y-%m-%d') }}</div>
+					<h1><a href="{{ url_for('blog.post', title=auth_post['title']) }}">{{ auth_post['title'] }}</a></h1>
+					<div class="about">by {{ auth_post['username'] }} on {{ auth_post['created'].strftime('%Y-%m-%d') }}</div>
 				</div>
 			</header>
-			<p class="body">{{ author['body'][:100] }}...</p>
-			<p class="more"><a href="{{ url_for('auth.author', id=author['id']) }}">More>></a></p>
+			<p class="body">{{ auth_post['body'][:100] }}...</p>
+			<p class="more"><a href="{{ url_for('blog.post', title=auth_post['title']) }}">More>></a></p>
 		</article>
 		{% if not loop.last %}
 			<hr>
 		{% endif %}
 	{% endfor %}
+{% endblock %}
+
+{% block sidebar %}
+	<h2>Recent Posts</h2>
+	<hr>
+	<ul>
+		{% for post in posts %}
+			<li>
+				<h3><a href="{{ url_for('blog.post', title=post['title']) }}">{{ post['title'] }}</a></h3>
+			</li>
+		{% endfor %}
+	</ul>
+	<h2>Comments</h2>
+	<hr>
+	<ul>
+		{% for comment in comments %}
+			<li>
+				<h3>- {{ comment['comment_text'] }}</h3>
+			</li>
+		{% endfor %}
+	</ul>
 {% endblock %}

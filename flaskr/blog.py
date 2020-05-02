@@ -8,8 +8,8 @@ from flask import request
 from flask import url_for
 from werkzeug.exceptions import abort
 
-from flaskr.auth import login_required
 from flaskr.db import get_db
+from flaskr.functions import post_list, get_post, comment_list, login_required
 
 bp = Blueprint("blog", __name__)
 
@@ -21,14 +21,14 @@ def index():
     
     return render_template("blog/index.html", posts=posts, comments=comments)
     
-@bp.route("/<int:id>")
-def post(id):
+@bp.route("/<title>")
+def post(title):
     post = (
         get_db().execute(
             "SELECT p.id, title, body, created, author_id, username"
             " FROM post p JOIN user u ON p.author_id = u.id"
-            " WHERE p.id = ?",
-            (id,),
+            " WHERE title = ?",
+            (title,),
         )
         .fetchone()
     )
@@ -68,11 +68,11 @@ def create():
     return render_template("blog/create.html")
 
 
-@bp.route("/<int:id>/update", methods=("GET", "POST"))
+@bp.route("/<title>/update", methods=("GET", "POST"))
 @login_required
-def update(id):
+def update(title):
     """Update a post if the current user is the author."""
-    post = get_post(id)
+    post = get_post(title)
 
     if request.method == "POST":
         title = request.form["title"]
@@ -87,36 +87,36 @@ def update(id):
         else:
             db = get_db()
             db.execute(
-                "UPDATE post SET title = ?, body = ? WHERE id = ?", (title, body, id)
+                "UPDATE post SET title = ?, body = ? WHERE title = ?", (title, body, title)
             )
             db.commit()
-            return redirect(url_for("blog.post", id=id))
+            return redirect(url_for("blog.post", title=title))
 
     return render_template("blog/update.html", post=post)
 
 
-@bp.route("/<int:id>/delete", methods=("POST",))
+@bp.route("/<title>/delete", methods=("POST",))
 @login_required
-def delete(id):
+def delete(title):
     """Delete a post.
     Ensures that the post exists and that the logged in user is the
     author of the post.
     """
-    get_post(id)
+    get_post(title)
     db = get_db()
-    db.execute("DELETE FROM post WHERE id = ?", (id,))
+    db.execute("DELETE FROM post WHERE title = ?", (title,))
     db.commit()
     return redirect(url_for("blog.index"))
 
-@bp.route("/<int:id>", methods=("GET", "POST"))
+@bp.route("/<title>", methods=("GET", "POST"))
 @login_required
-def add_comment(id):
+def add_comment(title):
     post = (
         get_db().execute(
             "SELECT p.id, title, body, created, author_id, username"
             " FROM post p JOIN user u ON p.author_id = u.id"
-            " WHERE p.id = ?",
-            (id)
+            " WHERE title = ?",
+            (title,)
         )
         .fetchone()
     )
@@ -137,58 +137,8 @@ def add_comment(id):
                 (post["id"], g.user["id"], comment_text)
             )
             db.commit()
-            return redirect(url_for("blog.post", id=id))
+            return redirect(url_for("blog.post", title=title))
             
     return render_template("blog/post.html", post=post)
-    
-def post_list():
-    db = get_db()
-    posts = db.execute(
-        "SELECT p.id, title, body, created, author_id, username"
-        " FROM post p JOIN user u ON p.author_id = u.id"
-        " ORDER BY created DESC"
-    ).fetchall()
-    
-    return posts
-
-def get_post(id, check_author=True):
-    post = (
-        get_db().execute(
-            "SELECT p.id, title, body, created, author_id, username"
-            " FROM post p JOIN user u ON p.author_id = u.id"
-            " WHERE p.id = ?",
-            (id)
-        )
-        .fetchone()
-    )
-
-    if post is None:
-        abort(404, "Post id doesn't exist.")
-
-    if check_author and post["author_id"] != g.user["id"]:
-        abort(403)
-
-    return post
-    
-def comment_list():
-    db = get_db()
-    comments = db.execute(
-        "SELECT c.id, user_id, post_id, comment_time, comment_text, username"
-        " FROM comment c JOIN user u ON c.user_id = u.id"
-        " ORDER BY comment_time DESC"
-    ).fetchall()
-    
-    return comments
-   
-def get_comment(id):
-    db = get_db()
-    comment = db.execute(
-        "SELECT c.id, user_id, comment_time, comment_text, username"
-        " FROM comment c JOIN user u ON c.user_id = u.id"
-        " WHERE c.id = ?",
-        (id)
-    ).fetchone()
-    
-    return comment
 
 
